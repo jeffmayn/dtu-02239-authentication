@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 
 public class PrinterServant  extends UnicastRemoteObject implements PrinterService {
 	
@@ -32,20 +33,31 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 		
 	}
 
-	public void start()  throws RemoteException{
-		// TODO Auto-generated method stub
+	public String start() throws RemoteException{
+	    ArrayList<String> printers = new ArrayList<String>();
+	    printers.add("Printer #1");
+	    printers.add("Printer #2");
+	    printers.add("Printer #3");
+	    printers.add("Printer #4");
+	    
+	    System.out.println(printers);
 		
+		return "All printers are started!";
 	}
 
-	public void stop() throws RemoteException {
+	public String stop() throws RemoteException {
+		return "Printer server stopped!";
+		
+		/*
 		System.out.println("stopping rmi server.");
 	    UnicastRemoteObject.unexportObject(registry, true);
 	    System.exit(0);
+	    */
 		
 	}
 
-	public void restart()  throws RemoteException{
-		// TODO Auto-generated method stub
+	public String restart()  throws RemoteException{
+		return "Printer server restarted!";
 		
 	}
 

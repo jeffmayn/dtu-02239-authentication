@@ -6,12 +6,17 @@ import java.rmi.server.UnicastRemoteObject;
 public class ApplicationServer {
 	
 	public static void main(String[] args) throws RemoteException {
-		Registry registry = LocateRegistry.createRegistry(5088);
+		
+		Registry registry = LocateRegistry.createRegistry(5063);
 		registry.rebind("printer", new PrinterServant());
 		
+		
+		
+		/*
 		System.out.println("stopping rmi server.");
 	    UnicastRemoteObject.unexportObject(registry, true);
 	    System.exit(0);
+	    */
 		
 	}
 
