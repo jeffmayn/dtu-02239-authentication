@@ -13,6 +13,7 @@ public class Database {
 
 	Connection c = null;
 	Statement stmt = null;
+	Crypto crypto = new Crypto();
 	
 	public String queryPasswordFromDatabase(String user) {
 		
@@ -45,7 +46,7 @@ public class Database {
 	          c = DriverManager.getConnection("jdbc:sqlite:database\\database" + rand_int + ".db");
 	         
 	          // create table
-	          String sql = "create table users (user varchar(20), password varchar(20))";
+	          String sql = "create table users (user varchar(20), password varchar(200))";
 	          stmt = c.createStatement();
 	          stmt.executeUpdate(sql);
 	          stmt.close();
@@ -56,7 +57,7 @@ public class Database {
 	          sql = "insert into users values ('admin','admin')";
 	          stmt.executeUpdate(sql);
 	          
-	          sql = "insert into users values ('jeff','password22')";
+	          sql = "insert into users values ('jeff','" + crypto.encrypt("password22") + "')";
 	          stmt.executeUpdate(sql);
 	          
 	          /*

@@ -13,7 +13,7 @@ public class Client {
 	
 	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
 		
-		PrinterService service = (PrinterService) Naming.lookup("rmi://localhost:5595/printer");
+		PrinterService service = (PrinterService) Naming.lookup("rmi://localhost:5137/printer");
 		
 		//System.out.println("--- " + service.echo("hey printer"));
 		
