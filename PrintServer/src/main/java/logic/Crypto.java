@@ -8,30 +8,42 @@ import java.security.SecureRandom;
 
 public class Crypto {
 	
-	public String encrypt(String plaintext) {
+	public String hash(String password, String salt) {
 		
-		SecureRandom random = new SecureRandom();
-		byte[] salt = new byte[16];
-		random.nextBytes(salt);
-		
+		byte[] bSalt = new byte[16];
 		MessageDigest md = null;
 		
+		// generate new salt since no salt was provided
+		if(salt == null) {
+			SecureRandom random = new SecureRandom();
+			random.nextBytes(bSalt);
+			
+		} else {
+			bSalt = salt.getBytes(Charset.forName("UTF-8"));
+		}
+
+		// add salt to SHA-512
 		try {
 			md = MessageDigest.getInstance("SHA-512");
-			md.update(salt);
+			md.update(bSalt);
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		byte[] hashedPassword = md.digest(plaintext.getBytes(Charset.forName("UTF-8")));
+		// add password to SHA-512
+		byte[] hashedPassword = md.digest(password.getBytes(Charset.forName("UTF-8")));
 		String hash = new String(hashedPassword,Charset.forName("UTF-8"));
-		
+
 		return hash;
 	}
 	
-	public String decrypt(String ciphertext) {
-		return "todo";
+	public boolean compareHashes(String h1, String h2) {
+		if(h1.equals(h2)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

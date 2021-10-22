@@ -17,26 +17,21 @@ public class Database {
 	
 	public String queryPasswordFromDatabase(String user) {
 		
-		String sql = "select * from users";
-				
+		String sql = "select * from users where user = '" + user + "'";
+		String password = "";
+		
 				try {
 					stmt = c.createStatement();
 					ResultSet result = stmt.executeQuery(sql);
 					
 					while(result.next()) {
-						String uuid = result.getString("user");
-						String password = result.getString("password");
-						System.out.println(uuid + " | " + password);
-					}
-					 c.close();
-					
+						password = result.getString("password");		
+					}		
 				} catch (SQLException e) {
 					System.out.println("ERROR!!!");
 					e.printStackTrace();
-				}
-				
-				return "password";
-		
+				}	
+				return password;	
 	}
 	
 	public void initialiseDatabase() throws RemoteException {
@@ -57,24 +52,14 @@ public class Database {
 	          sql = "insert into users values ('admin','admin')";
 	          stmt.executeUpdate(sql);
 	          
-	          sql = "insert into users values ('jeff','" + crypto.encrypt("password22") + "')";
-	          stmt.executeUpdate(sql);
-	          
-	          /*
-	          if(insert > 0) {
-	            	//System.out.println("insert to table: success!!");
-	          }
-	          */
-	        
+	          sql = "insert into users values ('jeff','" + crypto.hash("password22", "22-10-2021:21.18zz") + "')";
+	          stmt.executeUpdate(sql);	        
 	          stmt.close();
 
 	      } catch ( Exception e ) {
 	          System.err.println("[Server]: " + e.getClass().getName() + " --> " + e.getMessage() );
 	          System.exit(0);
 	      }
-	      // System.out.println("[Server]: Database is up!");
-	      // System.out.println("Table created successfully");
-        // System.exit(0);
 		
 	}
 

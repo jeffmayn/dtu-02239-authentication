@@ -5,7 +5,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Scanner;
 
-import server.PrinterService;
+import services.PrinterService;
 
 public class Client {
 	
@@ -13,47 +13,18 @@ public class Client {
 	
 	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
 		
-		PrinterService service = (PrinterService) Naming.lookup("rmi://localhost:5137/printer");
-		
+		PrinterService service = (PrinterService) Naming.lookup("rmi://localhost:5165/printer");
 		//System.out.println("--- " + service.echo("hey printer"));
 		
+		// creates database & printers
+		service.start(); 
 		
-
-		/*
-		while (!input.hasNext("exit")) {
+		// login & authenticate user
+		if(login(service)) {		
 			
-			String i = input.nextLine();
-			//System.out.println("i: " + i);
-			//printOptions();
-			//String n = input.next();
-			
-			if(i.equals("print")) { 
-				printLogic();
-
-			} else if (i.equals("1")) { printOptions(); } 
-			  else if (i.equals("queue")) { printOptions(); }
-			  else if (i.equals("topQueue")) { }
-			  else if (i.equals("start")) { service.start(); }
-			  else if (i.equals("stop")) { }
-			  else if (i.equals("forgot")) { service.getUserPassword(i); }
-			  else if (i.equals("restart")) {  }
-			  else if (i.equals("status")) {  }
-
+			// print(filename, printername)
+			service.print("text1.txt","p1");
 		}
-		*/
-		
-		// authenticate user
-		login();
-		
-		// creates database
-		// creates printers
-		service.start();
-		
-		// query 
-		service.getUserPassword("jeff");
-
-		// service.writeTestFile("test");
-		
 	}
 	
 	public static void printLogic() {
@@ -67,13 +38,37 @@ public class Client {
 		System.out.println("printing ...");
 	}
 	
-	public static void login() {
+	public static boolean login(PrinterService service) {
+	
 		
-		//TODO: make server authenticate one username and password
+	    System.out.println("Enter your username");
+		String userName = input.nextLine();  
 		
-	    System.out.println("Enter username");
-		String userName = input.nextLine();  // Read user input
-	    System.out.println("Welcome to Printer Service, " + userName);  // Output user input
+	    System.out.println("Enter your password");
+		String password = input.nextLine();  
+		
+		
+
+		boolean auth = false;
+	    try {
+	    	String salt = "22-10-2021:21.18zz";
+			auth = service.authenticateUser(userName, password, salt);
+			
+			
+			if(auth) {
+				System.out.println("Login succes!");
+				return auth;
+			} else {
+				System.out.println("Wrong username or password!");
+				return auth;
+			}
+			
+		} catch (RemoteException e) {
+			System.out.println("Authentication failed!");
+			e.printStackTrace();
+			return auth;
+		}
+		
 	}
 	
 

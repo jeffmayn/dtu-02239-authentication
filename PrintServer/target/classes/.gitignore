@@ -1,6 +1,5 @@
-/Logic.class
-/Database.class
-/auth/
-/logic/
+/application/
 /client/
 /server/
+/services/
+/logic/

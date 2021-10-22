@@ -1,26 +1,32 @@
-package logic;
+package client;
 
 public class UI {
 	
+	/*
+	while (!input.hasNext("exit")) {
+		
+		String i = input.nextLine();
+		//System.out.println("i: " + i);
+		//printOptions();
+		//String n = input.next();
+		
+		if(i.equals("print")) { 
+			printLogic();
+
+		} else if (i.equals("1")) { printOptions(); } 
+		  else if (i.equals("queue")) { printOptions(); }
+		  else if (i.equals("topQueue")) { }
+		  else if (i.equals("start")) { service.start(); }
+		  else if (i.equals("stop")) { }
+		  else if (i.equals("forgot")) { service.getUserPassword(i); }
+		  else if (i.equals("restart")) {  }
+		  else if (i.equals("status")) {  }
+
+	}
+	*/
+	
 	
 	public void printOptions() {
-		/*
-		String options = "+--- MENU ------------------------------------------------------+\n"
-					   + "│                                                               │"
-					   + "│      See options(1)       Login / Logout(2)        Exit(3)    │"
-					   + "│                                                               │"
-					   + "+---COMMAND --------------DESCRIPTION---------------------------+"
-					   + "│ print         │ prints file filename on the specified printer │"
-					   + "│ queue         │ lists the print queue for a given printer     │"
-					   + "│ topQueue      │ moves job to the top of the queue             │"
-					   + "│ start         │ starts the print server                       │"
-					   + "│ stop          │ stops the print se                            │"
-					   + "│ restart       │ stops, clears and restart server              │"
-					   + "│ status        │ prints status of printer                      │"
-					   + ""
-					   + ""
-					   + "";
-		*/
 		
 	    System.out.println("+--- MENU ------------------------------------------------------+");
 	    System.out.println("'                                                               '");
