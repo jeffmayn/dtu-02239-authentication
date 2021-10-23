@@ -1,5 +1,7 @@
 package client;
 
+import java.util.Scanner;
+
 public class UI {
 	
 	/*
@@ -25,6 +27,16 @@ public class UI {
 	}
 	*/
 	
+	public boolean initialOptions(Scanner input) {
+		 System.out.println("Press (1) for automated tests\nPress (2) for manuel");	 
+		 String choice = input.nextLine();
+		 if(choice.equals("1")) {
+			 return true;
+		 } else {
+			 return false;
+		 }
+	}
+	
 	
 	public void printOptions() {
 		
@@ -44,6 +56,9 @@ public class UI {
 	    System.out.println("' exit          │ exits application                             '");
 	    System.out.println("+---------------------------------------------------------------+");
 	}
+
+
+
 	
 
 }

@@ -62,5 +62,15 @@ public class Database {
 	      }
 		
 	}
+	
+	public void disconnect() {
+		try {
+			c.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
 
 }

@@ -28,4 +28,8 @@ public class Printer {
     	queue.remove(job);
     	queue.add(0, temp);	
     }
+    
+    public void clearQueue() {
+    	queue.clear();
+    }
 }

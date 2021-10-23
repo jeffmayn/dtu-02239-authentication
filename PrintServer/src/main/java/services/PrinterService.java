@@ -13,9 +13,9 @@ public interface PrinterService extends Remote {
 	
 	public void start() throws RemoteException;
 	
-	public String stop() throws RemoteException;
+	public void stop() throws RemoteException;
 	
-	public String restart() throws RemoteException;
+	public void restart() throws RemoteException;
 	
 	public String status(String printer) throws RemoteException;
 	

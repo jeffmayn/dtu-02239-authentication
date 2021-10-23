@@ -47,18 +47,21 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 	public void topQueue(String printer, int job)  throws RemoteException{
 		for(Printer p : printers) {
 			if(p.printerName.equals(printer)) {
-				p.topQueue(job);
+				System.out.println("[Server]: Moving job" + "[" + job + "] to top.\n");
+				p.topQueue(job-1);
 			}
 		}
 	}
 
 	public void start() throws RemoteException{
+		System.out.println("[server]: starting..\n");
 		db.initialiseDatabase();
 		initialisePrinters(); 
 	}
 
-	public String stop() throws RemoteException {
-		return "Printer server stopped!";
+	public void stop() throws RemoteException {
+		System.out.println("[server]: stopping..");
+		db.disconnect();
 		
 		/*
 		System.out.println("stopping rmi server.");
@@ -68,8 +71,11 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 		
 	}
 
-	public String restart()  throws RemoteException{
-		return "Printer server restarted!";
+	public void restart()  throws RemoteException{
+		System.out.println("[server]: restarting..");
+		stop();
+		printers.clear();
+		start();
 		
 	}
 
@@ -97,6 +103,10 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
         Printer home = new Printer();
         home.setPrinterName("home");
         printers.add(home);
+        
+        Printer hallway = new Printer();
+        hallway.setPrinterName("hallway");
+        printers.add(hallway);
 
 	}
 
