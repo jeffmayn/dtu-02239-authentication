@@ -5,11 +5,9 @@ import java.rmi.Remote;
 
 public interface PrinterService extends Remote {
 	
-	public String echo(String input) throws RemoteException;
-	
 	public void print(String filename, String printer) throws RemoteException;
 	
-	public List queue(String printer) throws RemoteException;
+	public void queue(String printer) throws RemoteException;
 	
 	public void topQueue(String printer, int job) throws RemoteException;
 	

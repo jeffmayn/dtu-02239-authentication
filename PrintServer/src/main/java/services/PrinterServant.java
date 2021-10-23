@@ -1,58 +1,60 @@
 package services;
-import java.awt.List;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-
-import client.UI;
 import logic.Crypto;
 import logic.Database;
 import logic.Log;
 
 public class PrinterServant  extends UnicastRemoteObject implements PrinterService {
-
+	
+	ArrayList<Printer> printers = new ArrayList<Printer>();
 	Database db = new Database();
 	Log log = new Log();
 	Crypto crypto = new Crypto();
 	
 	public PrinterServant() throws RemoteException {
-		super();
+		super();	
+	}
+
+	public void print(String filename, String printer) throws RemoteException {
 		
+		for (Printer p : printers) {
+			if(p.printerName.equals(printer)) {
+				p.addToQueue(filename);
+				//break;
+			} 
+		}
+		//System.out.println("Printer " + printer + " not found!");	
 	}
 
-	public String echo(String input) throws RemoteException {
-		return "From printer server: " + input;
-	}
-
-	public void print(String filename, String printer)throws RemoteException {
+	public void queue(String printer)throws RemoteException {
 		
-		System.out.println(printer + " printin: KILL ALL HUMANS");
-	}
-
-	public List queue(String printer)throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+		for (Printer p : printers) {
+			if(p.printerName.equals(printer)) {
+				System.out.println("Queue for printer: " + printer);
+			
+				int i = 1;
+				for (String job : p.getQueue()) {			
+					System.out.println("[" + i + "]" + job);
+					i++;
+				}
+			} 
+		}
+		System.out.println("");
 	}
 
 	public void topQueue(String printer, int job)  throws RemoteException{
-		// TODO Auto-generated method stub
-		
+		for(Printer p : printers) {
+			if(p.printerName.equals(printer)) {
+				p.topQueue(job);
+			}
+		}
 	}
 
 	public void start() throws RemoteException{
-	
-		
 		db.initialiseDatabase();
-		
-	    ArrayList<String> printers = new ArrayList<String>();
-	    printers.add("Printer #1");
-	    printers.add("Printer #2");
-	    printers.add("Printer #3");
-	    printers.add("Printer #4");
-	   
+		initialisePrinters(); 
 	}
 
 	public String stop() throws RemoteException {
@@ -85,6 +87,18 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 		// TODO Auto-generated method stub
 		
 	}
+	
+	private void initialisePrinters() {
+		
+        Printer office = new Printer();
+        office.setPrinterName("office");
+        printers.add(office);
+        
+        Printer home = new Printer();
+        home.setPrinterName("home");
+        printers.add(home);
+
+	}
 
 	public boolean authenticateUser(String uid, String password, String salt) throws RemoteException {
 		
@@ -92,11 +106,5 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 		String h2 = crypto.hash(password, salt);
 		
 		return crypto.compareHashes(h1, h2);
-		
-		
-
 	}
-
-	
-
 }
