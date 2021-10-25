@@ -1,32 +1,56 @@
 package client;
 
+import java.rmi.RemoteException;
 import java.util.Scanner;
+
+import services.PrinterService;
 
 public class UI {
 	
-	/*
-	while (!input.hasNext("exit")) {
+	public void startLoop(Scanner input, PrinterService service) throws RemoteException {
 		
-		String i = input.nextLine();
-		//System.out.println("i: " + i);
-		//printOptions();
-		//String n = input.next();
-		
-		if(i.equals("print")) { 
-			printLogic();
-
-		} else if (i.equals("1")) { printOptions(); } 
-		  else if (i.equals("queue")) { printOptions(); }
-		  else if (i.equals("topQueue")) { }
-		  else if (i.equals("start")) { service.start(); }
-		  else if (i.equals("stop")) { }
-		  else if (i.equals("forgot")) { service.getUserPassword(i); }
-		  else if (i.equals("restart")) {  }
-		  else if (i.equals("status")) {  }
-
+		while (!input.hasNext("exit")) {
+			
+			String i = input.nextLine();
+			//System.out.println("i: " + i);
+			//printOptions();
+			//String n = input.next();
+			
+			if(i.equals("print")) { printLogic(input); } 
+			  else if (i.equals("1")) { printOptions(); } 
+			  else if (i.equals("queue")) { printOptions(); }
+			  else if (i.equals("topQueue")) { topQueueLogic(service, input); }
+			  else if (i.equals("start")) { service.start(); }
+			  else if (i.equals("stop")) { }
+			  else if (i.equals("restart")) {  }
+			  else if (i.equals("status")) {  }
+		}
 	}
-	*/
 	
+	public void topQueueLogic(PrinterService service, Scanner input) throws RemoteException {
+		
+		System.out.println("Write name of printer");
+		String printerName = input.nextLine();
+		
+		System.out.println("Write job#");
+		String job = input.nextLine();
+		
+		service.topQueue(job, 0);
+		
+	}
+	
+	public void printLogic(Scanner input) {
+		System.out.println("Please write name of printer");
+		String printerName = input.nextLine();
+		
+		System.out.println("Please write name of file");
+		String fileName = input.nextLine();
+		
+		System.out.println("> print(" + printerName + ", " + fileName + "); ");
+		System.out.println("printing ...");
+	}
+	
+
 	public boolean initialOptions(Scanner input) {
 		 System.out.println("Press (1) for automated tests\nPress (2) for manuel");	 
 		 String choice = input.nextLine();

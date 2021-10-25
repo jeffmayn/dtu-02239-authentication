@@ -36,7 +36,7 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 			
 				int i = 1;
 				for (String job : p.getQueue()) {			
-					System.out.println("[" + i + "]" + job);
+					System.out.println("[" + i + "] " + job);
 					i++;
 				}
 			} 

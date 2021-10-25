@@ -13,7 +13,7 @@ public class Client {
 	static Scanner input = new Scanner(System.in);  // Create a Scanner object
 	
 	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
-		PrinterService service = (PrinterService) Naming.lookup("rmi://localhost:5188/printer");
+		PrinterService service = (PrinterService) Naming.lookup("rmi://localhost:5193/printer");
 		
 		// boot up server: creates database & printers
 		service.start(); 
@@ -40,22 +40,12 @@ public class Client {
 				service.queue("office");
 			// manual
 			} else {
-				// TODO
-				System.out.println("NOT IMPLEMENTED YET!");
+				ui.printOptions();		
+				ui.startLoop(input, service);
 			}		
 		}
 	}
-	
-	public static void printLogic() {
-		System.out.println("Please write name of printer");
-		String printerName = input.nextLine();
-		
-		System.out.println("Please write name of file");
-		String fileName = input.nextLine();
-		
-		System.out.println("> print(" + printerName + ", " + fileName + "); ");
-		System.out.println("printing ...");
-	}
+
 	
 	public static boolean login(PrinterService service) {
 	    System.out.println("Enter your username");
