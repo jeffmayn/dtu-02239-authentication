@@ -1,6 +1,8 @@
 package services;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import logic.Crypto;
 import logic.Database;
@@ -12,6 +14,9 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 	Database db = new Database();
 	Log log = new Log();
 	Crypto crypto = new Crypto();
+
+	LocalDate localDate = LocalDate.now();
+	String path = "log\\";
 	
 	public PrinterServant() throws RemoteException {
 		super();	
@@ -21,11 +26,14 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 		
 		for (Printer p : printers) {
 			if(p.printerName.equals(printer)) {
-				p.addToQueue(filename);
-				//break;
+				p.addToQueue(filename); // add print to printer queue
+				try {
+					log.writeLogEntry(filename, path + printer + ".log"); // log the print
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			} 
 		}
-		//System.out.println("Printer " + printer + " not found!");	
 	}
 
 	public void queue(String printer)throws RemoteException {
@@ -56,11 +64,13 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 	public void start() throws RemoteException{
 		System.out.println("[server]: starting..\n");
 		db.initialiseDatabase();
+		//logPath = log.initialiseLog();
 		initialisePrinters(); 
 	}
 
 	public void stop() throws RemoteException {
 		System.out.println("[server]: stopping..");
+		//logPath = "";
 		db.disconnect();
 		
 		/*

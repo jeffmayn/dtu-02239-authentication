@@ -13,7 +13,7 @@ public class Client {
 	static Scanner input = new Scanner(System.in);  // Create a Scanner object
 	
 	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
-		PrinterService service = (PrinterService) Naming.lookup("rmi://localhost:5193/printer");
+		PrinterService service = (PrinterService) Naming.lookup("rmi://localhost:5227/printer");
 		
 		// boot up server: creates database & printers
 		service.start(); 
