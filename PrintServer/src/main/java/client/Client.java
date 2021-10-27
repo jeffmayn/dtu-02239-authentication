@@ -51,6 +51,12 @@ public class Client {
 						service.print("passwords.txt","office");
 						service.print("sometext.txt","office");
 						System.out.println(service.queue("office"));
+						
+						System.out.println(service.readConfig("lockout time"));
+						service.setConfig("lockout time", "20");
+						System.out.println(service.readConfig("lockout time"));
+						
+						
 					// manual
 					} else {
 						ui.printOptions();		

@@ -19,19 +19,12 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 
 	LocalDate localDate = LocalDate.now();
 	String path = "log\\";
-	boolean consoleLogServerPrints = false;
 	
 	String loggedInUser = "";
 	int authAttempts = 0;
 	boolean lock = false;
-	
-	long timestampBegin = System.currentTimeMillis();
-	//long timestamp2 = System.currentTimeMillis();
 	int lockoutTime = 10000;
-	
-	
-	long timestamp1 = 0;
-	long timestamp2 = 0;
+	long timestamp = 0;
 	
 	public PrinterServant() throws RemoteException {
 		super();
@@ -51,26 +44,21 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 		String queue = "Queue for printer: " + printer + "\n";
 		for (Printer p : printers) {
 			if(p.printerName.equals(printer)) {
-				if(consoleLogServerPrints) System.out.println("Queue for printer: " + printer);
-				writeLogEntry("[user]: Queue for printer: " + printer, path + "server.log");
+				writeLogEntry("[" + loggedInUser + "]: Queue for printer: " + printer, path + "server.log");
 				
 				int i = 1;
 				for (String job : p.getQueue()) {			
-					if(consoleLogServerPrints) System.out.println("[" + i + "] " + job);
 					queue += "<" + i + "> <" + job + ">\n";
-				//	writeLogEntry("[" + i + "] " + job, path + "server.log");
 					i++;
 				}
 			} 
 		}
-		if(consoleLogServerPrints) System.out.println("");
 		return queue;
 	}
 
 	public void topQueue(String printer, int job)  throws RemoteException{
 		for(Printer p : printers) {
 			if(p.printerName.equals(printer)) {
-				if(consoleLogServerPrints) System.out.println("[Server]: Moving job" + "[" + job + "] to top.\n");
 				writeLogEntry("[Server]: Moving job" + "[" + job + "] to top.", path + "server.log");
 				p.topQueue(job-1);
 			}
@@ -78,7 +66,6 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 	}
 
 	public void start() throws RemoteException{
-		if(consoleLogServerPrints) System.out.println("[server]: starting.");
 		writeLogEntry("[server]: starting..", path + "server.log");
 		db.initialiseDatabase();
 		//logPath = log.initialiseLog();
@@ -86,26 +73,15 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 	}
 
 	public void stop() throws RemoteException {
-		if(consoleLogServerPrints) System.out.println("[server]: stopping.");
 		writeLogEntry("[server]: stopping..", path + "server.log");
-		//logPath = "";
-		db.disconnect();
-		
-		/*
-		System.out.println("stopping rmi server.");
-	    UnicastRemoteObject.unexportObject(registry, true);
-	    System.exit(0);
-	    */
-		
+		db.disconnect();	
 	}
 
 	public void restart()  throws RemoteException{
-		if(consoleLogServerPrints) System.out.println("[server]: restarting.");
 		writeLogEntry("[server]: restarting..", path + "server.log");
 		stop();
 		printers.clear();
 		start();
-		
 	}
 
 	public String status(String printer) throws RemoteException {
@@ -120,13 +96,21 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 	}
 
 	public String readConfig(String parameter)  throws RemoteException{
-		// TODO Auto-generated method stub
-		return null;
+		String retVal = "invalid parameter";
+		writeLogEntry("[" + loggedInUser + "]: reading server config", path + "server.log");
+		
+		if(parameter.equals("lockout time")) {
+			retVal = "server configuration. Lockout time = " + Integer.toString(lockoutTime / 1000) + " seconds";
+		} 
+		
+		return retVal;
 	}
 
 	public void setConfig(String parameter, String value) throws RemoteException {
-		// TODO Auto-generated method stub
-		
+		if(parameter.equals("lockout time")) {
+			writeLogEntry("[" + loggedInUser + "]: sets lockout time to: " + value, path + "server.log");
+			lockoutTime = Integer.parseInt(value) * 1000;
+		}
 	}
 	
 	private void initialisePrinters() {
@@ -154,28 +138,29 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 			e.printStackTrace();
 		}
 	}
+	
 
 	public String authenticateUser(String uid, String password) throws RemoteException {
-		
-		if(System.currentTimeMillis() >= (timestamp1 + lockoutTime)) {
-			lock = false;
-			timestamp1 = 0;
-		}
-	
 		String returnVal = "";
 		boolean loggedIn = false;
-		String[] credentials = db.getCredentials(uid); 	// users (password, salt) from DB
 		
+		// remove lock if user has exceeded lockout time
+		if(System.currentTimeMillis() >= (timestamp + lockoutTime)) {
+			lock = false;
+			timestamp = 0;
+		}
+	
+		// get hashes from DB and users login
+		String[] credentials = db.getCredentials(uid); 	// users [h(password+salt), salt] from DB
 		String h1 = credentials[0];
 		String h2 = crypto.hash(password, credentials[1]);
 		
-			
 		authAttempts++;	
 		if(!lock) {
 			if(authAttempts < 3) {
 				loggedIn = crypto.compareHashes(h1, h2);
-				
 				if(loggedIn) {
+					loggedInUser = uid;
 					returnVal = "Login succesful!";
 					writeLogEntry("[" + uid + "]: logged in succesfully", path + "server.log");
 				} else {
@@ -184,16 +169,14 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 			} else {
 				authAttempts = 0;
 				lock = true;
-				timestamp1 = System.currentTimeMillis();
+				timestamp = System.currentTimeMillis();
 				returnVal = "Too many attempts. Try again in " + lockoutTime / 1000 + "seconds";
 				writeLogEntry("[" + uid + "]: Too many unsuccesful login attemps. Lock applied", path + "server.log");
 			}
 		} else {
 			writeLogEntry("[" + uid + "]: Too many unsuccesful login attemps", path + "server.log");
-			returnVal = "Too many attempts. Try again in " + (lockoutTime - (System.currentTimeMillis() - timestamp1)) / 1000 + " seconds";	
+			returnVal = "Too many attempts. Try again in " + (lockoutTime - (System.currentTimeMillis() - timestamp)) / 1000 + " seconds";	
 		}
-		
 		return returnVal;
-	
 	}
 }

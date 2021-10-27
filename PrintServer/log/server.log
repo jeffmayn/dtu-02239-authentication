@@ -1,12 +1,13 @@
-27-10-2021 22:02:17 -- [server]: starting..
-27-10-2021 22:02:25 -- [jeff]: Too many unsuccesful login attemps. Lock applied
-27-10-2021 22:02:29 -- [jeff]: Too many unsuccesful login attemps
-27-10-2021 22:02:39 -- [jeff]: logged in succesfully
-27-10-2021 22:02:42 -- [user]: Queue for printer: office
-27-10-2021 22:02:42 -- [Server]: Moving job[3] to top.
-27-10-2021 22:02:42 -- [user]: Queue for printer: office
-27-10-2021 22:02:42 -- [user]: Queue for printer: home
-27-10-2021 22:02:42 -- [server]: restarting..
-27-10-2021 22:02:42 -- [server]: stopping..
-27-10-2021 22:02:42 -- [server]: starting..
-27-10-2021 22:02:42 -- [user]: Queue for printer: office
+27-10-2021 22:48:22 -- [server]: starting..
+27-10-2021 22:48:26 -- [jeff]: logged in succesfully
+27-10-2021 22:48:27 -- [jeff]: Queue for printer: office
+27-10-2021 22:48:27 -- [Server]: Moving job[3] to top.
+27-10-2021 22:48:27 -- [jeff]: Queue for printer: office
+27-10-2021 22:48:27 -- [jeff]: Queue for printer: home
+27-10-2021 22:48:27 -- [server]: restarting..
+27-10-2021 22:48:27 -- [server]: stopping..
+27-10-2021 22:48:27 -- [server]: starting..
+27-10-2021 22:48:27 -- [jeff]: Queue for printer: office
+27-10-2021 22:48:27 -- [jeff]: reading server config
+27-10-2021 22:48:27 -- [jeff]: sets lockout time to: 20
+27-10-2021 22:48:27 -- [jeff]: reading server config
