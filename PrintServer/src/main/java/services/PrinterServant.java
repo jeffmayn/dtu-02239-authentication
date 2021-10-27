@@ -20,11 +20,18 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 	LocalDate localDate = LocalDate.now();
 	String path = "log\\";
 	boolean consoleLogServerPrints = false;
+	
 	String loggedInUser = "";
 	int authAttempts = 0;
+	boolean lock = false;
+	
 	long timestampBegin = System.currentTimeMillis();
-	long timestamp2 = System.currentTimeMillis();
+	//long timestamp2 = System.currentTimeMillis();
 	int lockoutTime = 10000;
+	
+	
+	long timestamp1 = 0;
+	long timestamp2 = 0;
 	
 	public PrinterServant() throws RemoteException {
 		super();
@@ -150,42 +157,41 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 
 	public String authenticateUser(String uid, String password) throws RemoteException {
 		
+		if(System.currentTimeMillis() >= (timestamp1 + lockoutTime)) {
+			lock = false;
+			timestamp1 = 0;
+		}
+	
 		String returnVal = "";
-		
-		String[] h1 = db.queryPasswordFromDatabase(uid);
-		String h2 = crypto.hash(password, h1[1]);
-
 		boolean loggedIn = false;
+		String[] credentials = db.getCredentials(uid); 	// users (password, salt) from DB
 		
-		if(authAttempts > 2) {
-			timestamp2 = System.currentTimeMillis();
+		String h1 = credentials[0];
+		String h2 = crypto.hash(password, credentials[1]);
+		
 			
-			if(timestamp2 - timestampBegin >= lockoutTime) {
-				 loggedIn = crypto.compareHashes(h1[0], h2);
-				timestampBegin = timestamp2;	
-			
+		authAttempts++;	
+		if(!lock) {
+			if(authAttempts < 3) {
+				loggedIn = crypto.compareHashes(h1, h2);
+				
 				if(loggedIn) {
 					returnVal = "Login succesful!";
 				} else {
 					returnVal = "Wrong password or username";
-				}
+				}	
 			} else {
-				loggedIn = false;
-				returnVal = "Too many attempts. Try again in " + (lockoutTime - ( timestampBegin - timestamp2)) / 1000 + " seconds";
+				authAttempts = 0;
+				lock = true;
+				timestamp1 = System.currentTimeMillis();
+				returnVal = "Too many attempts. Try again in " + lockoutTime / 1000 + "seconds";
 			}
 		} else {
-			 loggedIn = crypto.compareHashes(h1[0], h2);
-			 
-			 if(loggedIn) {
-					returnVal = "Login succesful!";
-				} else {
-					returnVal = "Wrong password or username";
-				}
+			returnVal = "Too many attempts. Try again in " + (lockoutTime - (System.currentTimeMillis() - timestamp1)) / 1000 + " seconds";	
 		}
 		
-		
-		
-		
+		/*
+
 		if(loggedIn) {
 			authAttempts = 0;
 			writeLogEntry("[" + uid + "]: logged in", path + "server.log");
@@ -196,6 +202,7 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 			writeLogEntry("[" + uid + "]: failed login attempt #" + authAttempts, path + "server.log");
 			loggedInUser = null;
 		}
+		*/
 		
 		return returnVal;
 	

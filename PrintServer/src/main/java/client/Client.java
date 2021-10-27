@@ -16,18 +16,15 @@ public class Client {
 	static Scanner input = new Scanner(System.in);  // Create a Scanner object
 	
 	public void begin(int portnumber) throws RemoteException {
+		
 		try {
 			 service = (PrinterService) Naming.lookup("rmi://localhost:" + portnumber + "/printer");
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NotBoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
+		catch (MalformedURLException e) { e.printStackTrace(); } 
+		catch (RemoteException e) 		{ e.printStackTrace(); } 
+		catch (NotBoundException e) 	{ e.printStackTrace(); }
+		
+		
 				
 				// boot up server: creates database & printers
 				service.start(); 

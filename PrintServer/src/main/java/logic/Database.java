@@ -16,7 +16,7 @@ public class Database {
 	Crypto crypto = new Crypto();
 
 	
-	public String[] queryPasswordFromDatabase(String user) {
+	public String[] getCredentials(String user) {
 		
 		String sql = "select * from users where user = '" + user + "'";
 		String password = "";
@@ -55,8 +55,7 @@ public class Database {
 	          sql = "insert into users values ('admin','admin', '22-10-2021:21.18xx')";
 	          stmt.executeUpdate(sql);
 	          
-	          // ('jeff')
-	          sql = "insert into users values ('jeff','" + crypto.hash("password22", "22-10-2021:21.18zz")+ "','22-10-2021:21.18zz'"+ ")";
+	          sql = "insert into users values ('jeff','" + crypto.hash("password22", "22-10-2021:21.18zz") + "','22-10-2021:21.18zz')";
 	         stmt.executeUpdate(sql);	        
 	          stmt.close();
 
