@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 
@@ -20,6 +21,8 @@ public class Log {
 	public void writeLogEntry(String txt, String path) throws IOException {
 		
 		LocalDateTime localDateTime = LocalDateTime.now();
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");  
+		String formatDateTime = localDateTime.format(format);  
 		//String time = localDate.toString();
 		
 		File f = new File(path);
@@ -28,16 +31,16 @@ public class Log {
 			{
 			  //  String filename= "MyFile.txt";
 			    FileWriter fw = new FileWriter(path,true); //the true will append the new data
-			    fw.write("<" + localDateTime + ">" + " <" + txt + ">" + "\n");//appends the string to the file
+			    fw.write(formatDateTime + " -- "  + txt + "\n");//appends the string to the file
 			    fw.close();
-			}
+			}	
 			catch(IOException ioe)
 			{
 			    System.err.println("IOException: " + ioe.getMessage());
 			}
 		} else {
 			FileWriter fw = new FileWriter(path,false); //the true will append the new data
-			 fw.write("<" + localDateTime + ">" + " <" + txt + ">" + "\n");///appends the string to the file
+			 fw.write(formatDateTime + " -- " + txt + "\n");///appends the string to the file
 		    fw.close();
 		}
 	

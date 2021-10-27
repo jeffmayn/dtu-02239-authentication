@@ -1,5 +1,6 @@
 package services;
 import java.rmi.RemoteException;
+import java.util.HashMap;
 import java.awt.List;
 import java.rmi.Remote;
 
@@ -7,7 +8,7 @@ public interface PrinterService extends Remote {
 	
 	public void print(String filename, String printer) throws RemoteException;
 	
-	public void queue(String printer) throws RemoteException;
+	public String queue(String printer) throws RemoteException;
 	
 	public void topQueue(String printer, int job) throws RemoteException;
 	

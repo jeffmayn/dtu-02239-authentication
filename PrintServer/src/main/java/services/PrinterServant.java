@@ -4,6 +4,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import logic.Crypto;
 import logic.Database;
 import logic.Log;
@@ -17,59 +19,63 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 
 	LocalDate localDate = LocalDate.now();
 	String path = "log\\";
+	boolean consoleLogServerPrints = false;
 	
 	public PrinterServant() throws RemoteException {
 		super();	
 	}
 
 	public void print(String filename, String printer) throws RemoteException {
-		
 		for (Printer p : printers) {
 			if(p.printerName.equals(printer)) {
 				p.addToQueue(filename); // add print to printer queue
-				try {
-					log.writeLogEntry(filename, path + printer + ".log"); // log the print
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				writeLogEntry(filename, path + printer + ".log");
 			} 
 		}
 	}
-
-	public void queue(String printer)throws RemoteException {
+	
+	public String queue(String printer)throws RemoteException {
 		
+		String queue = "Queue for printer: " + printer + "\n";
 		for (Printer p : printers) {
 			if(p.printerName.equals(printer)) {
-				System.out.println("Queue for printer: " + printer);
-			
+				if(consoleLogServerPrints) System.out.println("Queue for printer: " + printer);
+				writeLogEntry("[user]: Queue for printer: " + printer, path + "server.log");
+				
 				int i = 1;
 				for (String job : p.getQueue()) {			
-					System.out.println("[" + i + "] " + job);
+					if(consoleLogServerPrints) System.out.println("[" + i + "] " + job);
+					queue += "<" + i + "> <" + job + ">\n";
+				//	writeLogEntry("[" + i + "] " + job, path + "server.log");
 					i++;
 				}
 			} 
 		}
-		System.out.println("");
+		if(consoleLogServerPrints) System.out.println("");
+		return queue;
 	}
 
 	public void topQueue(String printer, int job)  throws RemoteException{
 		for(Printer p : printers) {
 			if(p.printerName.equals(printer)) {
-				System.out.println("[Server]: Moving job" + "[" + job + "] to top.\n");
+				if(consoleLogServerPrints) System.out.println("[Server]: Moving job" + "[" + job + "] to top.\n");
+				writeLogEntry("[Server]: Moving job" + "[" + job + "] to top.", path + "server.log");
 				p.topQueue(job-1);
 			}
 		}
 	}
 
 	public void start() throws RemoteException{
-		System.out.println("[server]: starting..\n");
+		if(consoleLogServerPrints) System.out.println("[server]: starting.");
+		writeLogEntry("[server]: starting..", path + "server.log");
 		db.initialiseDatabase();
 		//logPath = log.initialiseLog();
 		initialisePrinters(); 
 	}
 
 	public void stop() throws RemoteException {
-		System.out.println("[server]: stopping..");
+		if(consoleLogServerPrints) System.out.println("[server]: stopping.");
+		writeLogEntry("[server]: stopping..", path + "server.log");
 		//logPath = "";
 		db.disconnect();
 		
@@ -82,7 +88,8 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 	}
 
 	public void restart()  throws RemoteException{
-		System.out.println("[server]: restarting..");
+		if(consoleLogServerPrints) System.out.println("[server]: restarting.");
+		writeLogEntry("[server]: restarting..", path + "server.log");
 		stop();
 		printers.clear();
 		start();
@@ -90,8 +97,14 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 	}
 
 	public String status(String printer) throws RemoteException {
-		// TODO Auto-generated method stub
-		return "";
+		String returnMessage = "status for " + printer + ": ";
+		for(Printer p : printers) {
+			
+			if(p.printerName.equals(printer)) {
+				returnMessage = p.status();				
+			} 
+		}
+		return returnMessage;
 	}
 
 	public String readConfig(String parameter)  throws RemoteException{
@@ -106,18 +119,28 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 	
 	private void initialisePrinters() {
 		
-        Printer office = new Printer();
+		// printer(boolean color, integer ink level)
+        Printer office = new Printer(true, 90);
         office.setPrinterName("office");
         printers.add(office);
         
-        Printer home = new Printer();
+        Printer home = new Printer(false, 2);
         home.setPrinterName("home");
         printers.add(home);
         
-        Printer hallway = new Printer();
+        Printer hallway = new Printer(true, 50);
         hallway.setPrinterName("hallway");
         printers.add(hallway);
 
+	}
+	
+	private void writeLogEntry(String txt, String path) {
+		try {
+			log.writeLogEntry(txt, path);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public boolean authenticateUser(String uid, String password, String salt) throws RemoteException {

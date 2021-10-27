@@ -76,7 +76,6 @@ public class UI {
 	    System.out.println("' stop          │ stops the print se                            '");
 	    System.out.println("' restart       │ stops, clears and restart server              '");
 	    System.out.println("' status        │ prints status of printer                      '");
-	    System.out.println("' forgot        │ return users password                         '");
 	    System.out.println("' exit          │ exits application                             '");
 	    System.out.println("+---------------------------------------------------------------+");
 	}
