@@ -20,9 +20,14 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 	LocalDate localDate = LocalDate.now();
 	String path = "log\\";
 	boolean consoleLogServerPrints = false;
+	String loggedInUser = "";
+	int authAttempts = 0;
+	long timestampBegin = System.currentTimeMillis();
+	long timestamp2 = System.currentTimeMillis();
+	int lockoutTime = 10000;
 	
 	public PrinterServant() throws RemoteException {
-		super();	
+		super();
 	}
 
 	public void print(String filename, String printer) throws RemoteException {
@@ -143,11 +148,56 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 		}
 	}
 
-	public boolean authenticateUser(String uid, String password, String salt) throws RemoteException {
+	public String authenticateUser(String uid, String password) throws RemoteException {
 		
-		String h1 = db.queryPasswordFromDatabase(uid);
-		String h2 = crypto.hash(password, salt);
+		String returnVal = "";
 		
-		return crypto.compareHashes(h1, h2);
+		String[] h1 = db.queryPasswordFromDatabase(uid);
+		String h2 = crypto.hash(password, h1[1]);
+
+		boolean loggedIn = false;
+		
+		if(authAttempts > 2) {
+			timestamp2 = System.currentTimeMillis();
+			
+			if(timestamp2 - timestampBegin >= lockoutTime) {
+				 loggedIn = crypto.compareHashes(h1[0], h2);
+				timestampBegin = timestamp2;	
+			
+				if(loggedIn) {
+					returnVal = "Login succesful!";
+				} else {
+					returnVal = "Wrong password or username";
+				}
+			} else {
+				loggedIn = false;
+				returnVal = "Too many attempts. Try again in " + (lockoutTime - ( timestampBegin - timestamp2)) / 1000 + " seconds";
+			}
+		} else {
+			 loggedIn = crypto.compareHashes(h1[0], h2);
+			 
+			 if(loggedIn) {
+					returnVal = "Login succesful!";
+				} else {
+					returnVal = "Wrong password or username";
+				}
+		}
+		
+		
+		
+		
+		if(loggedIn) {
+			authAttempts = 0;
+			writeLogEntry("[" + uid + "]: logged in", path + "server.log");
+			loggedInUser = uid;
+		} else {
+			
+			authAttempts++;
+			writeLogEntry("[" + uid + "]: failed login attempt #" + authAttempts, path + "server.log");
+			loggedInUser = null;
+		}
+		
+		return returnVal;
+	
 	}
 }

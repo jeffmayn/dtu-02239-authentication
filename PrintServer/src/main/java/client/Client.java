@@ -3,6 +3,7 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
 import services.PrinterService;
@@ -66,29 +67,24 @@ public class Client {
 	}
 
 	
-	public static boolean login(PrinterService service) {
-	    System.out.println("Enter your username");
-		String userName = input.nextLine();  
+	public boolean login(PrinterService service) throws RemoteException {
+	
+		String yo = "";
 		
-	    System.out.println("Enter your password");
-		String password = input.nextLine();  
-		
-		boolean auth = false;
-	    try {
-	    	String salt = "22-10-2021:21.18zz";
-			auth = service.authenticateUser(userName, password, salt);		
+		while (!yo.equals("Login succesful!")) {
 			
-			if(auth) {
-				System.out.println("Login succes!\n");
-				return auth;
-			} else {
-				System.out.println("Wrong username or password!\n");
-				return auth;
-			}		
-		} catch (RemoteException e) {
-			System.out.println("Authentication failed!\n");
-			e.printStackTrace();
-			return auth;
-		}	
+		    System.out.println("Enter your username");
+			String userName = input.nextLine();  
+			
+		    System.out.println("Enter your password");
+			String password = input.nextLine();  
+			
+			yo = service.authenticateUser(userName, password);		
+			
+			System.out.println(yo);
+		}
+
+		return true;
+	
 	}
 }

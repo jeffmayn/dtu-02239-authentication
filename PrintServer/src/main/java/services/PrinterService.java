@@ -24,7 +24,7 @@ public interface PrinterService extends Remote {
 	
 	public void setConfig(String parameter, String value) throws RemoteException;
 	
-	public boolean authenticateUser(String uid, String password, String salt) throws RemoteException;
+	public String authenticateUser(String uid, String password) throws RemoteException;
 	
 
 }
