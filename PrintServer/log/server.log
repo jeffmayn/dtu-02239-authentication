@@ -1,49 +1,12 @@
-27-10-2021 17:07:17 -- [server]: starting..
-27-10-2021 17:07:19 -- [jesfsf]: failed login attempt #1
-27-10-2021 17:07:20 -- [sdgsdgsdg]: failed login attempt #2
-27-10-2021 17:07:22 -- [sdgsdg]: failed login attempt #3
-27-10-2021 17:07:24 -- [sdgsdg]: failed login attempt #4
-27-10-2021 17:07:26 -- [sdgsdg]: failed login attempt #5
-27-10-2021 17:07:28 -- [sdgsdgsgd]: failed login attempt #6
-27-10-2021 17:07:30 -- [sdgsdg]: failed login attempt #7
-27-10-2021 17:07:34 -- [sdgsdgsdgsdg]: failed login attempt #8
-27-10-2021 17:07:54 -- [jeff]: logged in
-27-10-2021 17:07:56 -- [user]: Queue for printer: office
-27-10-2021 17:07:56 -- [Server]: Moving job[3] to top.
-27-10-2021 17:07:56 -- [user]: Queue for printer: office
-27-10-2021 17:07:56 -- [user]: Queue for printer: home
-27-10-2021 17:07:56 -- [server]: restarting..
-27-10-2021 17:07:56 -- [server]: stopping..
-27-10-2021 17:07:56 -- [server]: starting..
-27-10-2021 17:07:56 -- [user]: Queue for printer: office
-27-10-2021 17:08:13 -- [server]: starting..
-27-10-2021 17:08:16 -- [jefsaf]: failed login attempt #1
-27-10-2021 17:08:18 -- [asfasfasf]: failed login attempt #2
-27-10-2021 17:08:20 -- [asfasf]: failed login attempt #3
-27-10-2021 17:08:22 -- [asfasf]: failed login attempt #4
-27-10-2021 17:08:26 -- [jeff]: logged in
-27-10-2021 20:54:46 -- [server]: starting..
-27-10-2021 21:16:08 -- [server]: starting..
-27-10-2021 21:17:40 -- [server]: starting..
-27-10-2021 21:18:42 -- [server]: starting..
-27-10-2021 21:19:14 -- [server]: starting..
-27-10-2021 21:26:42 -- [server]: starting..
-27-10-2021 21:27:25 -- [server]: starting..
-27-10-2021 21:32:46 -- [server]: starting..
-27-10-2021 21:35:50 -- [server]: starting..
-27-10-2021 21:36:27 -- [server]: starting..
-27-10-2021 21:39:57 -- [server]: starting..
-27-10-2021 21:41:33 -- [server]: starting..
-27-10-2021 21:46:35 -- [server]: starting..
-27-10-2021 21:48:05 -- [server]: starting..
-27-10-2021 21:51:33 -- [server]: starting..
-27-10-2021 21:52:36 -- [server]: starting..
-27-10-2021 21:56:48 -- [server]: starting..
-27-10-2021 21:56:57 -- [user]: Queue for printer: office
-27-10-2021 21:56:57 -- [Server]: Moving job[3] to top.
-27-10-2021 21:56:57 -- [user]: Queue for printer: office
-27-10-2021 21:56:57 -- [user]: Queue for printer: home
-27-10-2021 21:56:57 -- [server]: restarting..
-27-10-2021 21:56:57 -- [server]: stopping..
-27-10-2021 21:56:57 -- [server]: starting..
-27-10-2021 21:56:57 -- [user]: Queue for printer: office
+27-10-2021 22:02:17 -- [server]: starting..
+27-10-2021 22:02:25 -- [jeff]: Too many unsuccesful login attemps. Lock applied
+27-10-2021 22:02:29 -- [jeff]: Too many unsuccesful login attemps
+27-10-2021 22:02:39 -- [jeff]: logged in succesfully
+27-10-2021 22:02:42 -- [user]: Queue for printer: office
+27-10-2021 22:02:42 -- [Server]: Moving job[3] to top.
+27-10-2021 22:02:42 -- [user]: Queue for printer: office
+27-10-2021 22:02:42 -- [user]: Queue for printer: home
+27-10-2021 22:02:42 -- [server]: restarting..
+27-10-2021 22:02:42 -- [server]: stopping..
+27-10-2021 22:02:42 -- [server]: starting..
+27-10-2021 22:02:42 -- [user]: Queue for printer: office

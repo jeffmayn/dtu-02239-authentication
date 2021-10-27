@@ -177,6 +177,7 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 				
 				if(loggedIn) {
 					returnVal = "Login succesful!";
+					writeLogEntry("[" + uid + "]: logged in succesfully", path + "server.log");
 				} else {
 					returnVal = "Wrong password or username";
 				}	
@@ -185,24 +186,12 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 				lock = true;
 				timestamp1 = System.currentTimeMillis();
 				returnVal = "Too many attempts. Try again in " + lockoutTime / 1000 + "seconds";
+				writeLogEntry("[" + uid + "]: Too many unsuccesful login attemps. Lock applied", path + "server.log");
 			}
 		} else {
+			writeLogEntry("[" + uid + "]: Too many unsuccesful login attemps", path + "server.log");
 			returnVal = "Too many attempts. Try again in " + (lockoutTime - (System.currentTimeMillis() - timestamp1)) / 1000 + " seconds";	
 		}
-		
-		/*
-
-		if(loggedIn) {
-			authAttempts = 0;
-			writeLogEntry("[" + uid + "]: logged in", path + "server.log");
-			loggedInUser = uid;
-		} else {
-			
-			authAttempts++;
-			writeLogEntry("[" + uid + "]: failed login attempt #" + authAttempts, path + "server.log");
-			loggedInUser = null;
-		}
-		*/
 		
 		return returnVal;
 	
