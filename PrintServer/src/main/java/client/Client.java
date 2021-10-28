@@ -5,6 +5,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import services.PrinterService;
 
@@ -47,6 +48,10 @@ public class Client {
 						service.print("text4.txt","home");
 						System.out.println(service.queue("home"));
 						
+		
+						
+						service.print("text6.txt","office");
+						
 						service.restart();
 						service.print("passwords.txt","office");
 						service.print("sometext.txt","office");
@@ -55,6 +60,15 @@ public class Client {
 						System.out.println(service.readConfig("lockout time"));
 						service.setConfig("lockout time", "20");
 						System.out.println(service.readConfig("lockout time"));
+						
+						try {
+							TimeUnit.SECONDS.sleep(11);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						System.out.println(service.status("office"));
 						
 						
 					// manual

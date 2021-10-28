@@ -9,6 +9,7 @@ import java.util.HashMap;
 import logic.Crypto;
 import logic.Database;
 import logic.Log;
+import logic.Session;
 
 public class PrinterServant  extends UnicastRemoteObject implements PrinterService {
 	
@@ -16,11 +17,13 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 	Database db = new Database();
 	Log log = new Log();
 	Crypto crypto = new Crypto();
+	Session session = new Session();
 
 	LocalDate localDate = LocalDate.now();
 	String path = "log\\";
 	
 	String loggedInUser = "";
+	boolean loggedIn = false;
 	int authAttempts = 0;
 	boolean lock = false;
 	int lockoutTime = 10000;
@@ -31,36 +34,53 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 	}
 
 	public void print(String filename, String printer) throws RemoteException {
-		for (Printer p : printers) {
-			if(p.printerName.equals(printer)) {
-				p.addToQueue(filename); // add print to printer queue
-				writeLogEntry(filename, path + printer + ".log");
-			} 
+		if(!session.getSessionState()) {
+			// System.out.println("Session expired");
+		} else {
+			for (Printer p : printers) {
+				if(p.printerName.equals(printer)) {
+					p.addToQueue(filename); // add print to printer queue
+					writeLogEntry(filename, path + printer + ".log");
+				} 
+			}
 		}
+		
+
 	}
 	
 	public String queue(String printer)throws RemoteException {
-		
-		String queue = "Queue for printer: " + printer + "\n";
-		for (Printer p : printers) {
-			if(p.printerName.equals(printer)) {
-				writeLogEntry("[" + loggedInUser + "]: Queue for printer: " + printer, path + "server.log");
-				
-				int i = 1;
-				for (String job : p.getQueue()) {			
-					queue += "<" + i + "> <" + job + ">\n";
-					i++;
-				}
-			} 
+		String queue = "";
+		if(!session.getSessionState()) {
+			queue = "Session expired";
+			// System.out.println("Session expired");
+		} else {
+			queue = "Queue for printer: " + printer + "\n";
+			for (Printer p : printers) {
+				if(p.printerName.equals(printer)) {
+			
+					writeLogEntry("[" + loggedInUser + "]: Queue for printer: " + printer, path + "server.log");
+					
+					int i = 1;
+					for (String job : p.getQueue()) {			
+						queue += "<" + i + "> <" + job + ">\n";
+						i++;
+					}
+				} 
+			}
 		}
+		
 		return queue;
 	}
 
 	public void topQueue(String printer, int job)  throws RemoteException{
-		for(Printer p : printers) {
-			if(p.printerName.equals(printer)) {
-				writeLogEntry("[Server]: Moving job" + "[" + job + "] to top.", path + "server.log");
-				p.topQueue(job-1);
+		if(!session.getSessionState()) {
+			// System.out.println("Session expired");
+		} else {
+			for(Printer p : printers) {
+				if(p.printerName.equals(printer)) {
+					writeLogEntry("[Server]: Moving job" + "[" + job + "] to top.", path + "server.log");
+					p.topQueue(job-1);
+				}
 			}
 		}
 	}
@@ -73,43 +93,66 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 	}
 
 	public void stop() throws RemoteException {
-		writeLogEntry("[server]: stopping..", path + "server.log");
-		db.disconnect();	
+		if(!session.getSessionState()) {
+			// System.out.println("Session expired");
+		} else {
+			writeLogEntry("[server]: stopping..", path + "server.log");
+			db.disconnect();	
+		}
 	}
 
 	public void restart()  throws RemoteException{
-		writeLogEntry("[server]: restarting..", path + "server.log");
-		stop();
-		printers.clear();
-		start();
+		if(!session.getSessionState()) {
+			// System.out.println("Session expired");
+		} else {
+			writeLogEntry("[server]: restarting..", path + "server.log");
+			stop();
+			printers.clear();
+			start();
+		}
 	}
 
 	public String status(String printer) throws RemoteException {
-		String returnMessage = "status for " + printer + ": ";
-		for(Printer p : printers) {
-			
-			if(p.printerName.equals(printer)) {
-				returnMessage = p.status();				
-			} 
+		String returnMessage = "";
+		if(!session.getSessionState()) {
+			returnMessage = "Session expired";
+	
+		} else {
+			returnMessage = "status for " + printer + ": ";
+			for(Printer p : printers) {
+				
+				if(p.printerName.equals(printer)) {
+					returnMessage = p.status();				
+				} 
+			}
 		}
 		return returnMessage;
 	}
 
 	public String readConfig(String parameter)  throws RemoteException{
-		String retVal = "invalid parameter";
-		writeLogEntry("[" + loggedInUser + "]: reading server config", path + "server.log");
-		
-		if(parameter.equals("lockout time")) {
-			retVal = "server configuration. Lockout time = " + Integer.toString(lockoutTime / 1000) + " seconds";
-		} 
+		String retVal = "";
+		if(!session.getSessionState()) {
+			 retVal = "Session expired";
+		} else {
+			retVal = "invalid parameter";
+			writeLogEntry("[" + loggedInUser + "]: reading server config", path + "server.log");
+			
+			if(parameter.equals("lockout time")) {
+				retVal = "server configuration. Lockout time = " + Integer.toString(lockoutTime / 1000) + " seconds";
+			} 
+		}
 		
 		return retVal;
 	}
 
 	public void setConfig(String parameter, String value) throws RemoteException {
-		if(parameter.equals("lockout time")) {
-			writeLogEntry("[" + loggedInUser + "]: sets lockout time to: " + value, path + "server.log");
-			lockoutTime = Integer.parseInt(value) * 1000;
+		if(!session.getSessionState()) {
+			// System.out.println("Session expired");
+		} else {
+			if(parameter.equals("lockout time")) {
+				writeLogEntry("[" + loggedInUser + "]: sets lockout time to: " + value, path + "server.log");
+				lockoutTime = Integer.parseInt(value) * 1000;
+			}
 		}
 	}
 	
@@ -141,8 +184,9 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 	
 
 	public String authenticateUser(String uid, String password) throws RemoteException {
+		
 		String returnVal = "";
-		boolean loggedIn = false;
+		loggedIn = session.getSessionState();
 		
 		// remove lock if user has exceeded lockout time
 		if(System.currentTimeMillis() >= (timestamp + lockoutTime)) {
@@ -160,11 +204,13 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 			if(authAttempts < 3) {
 				loggedIn = crypto.compareHashes(h1, h2);
 				if(loggedIn) {
-					loggedInUser = uid;
+					session.beginSession(uid);
+					loggedInUser = session.getUser();
 					returnVal = "Login succesful!";
 					writeLogEntry("[" + uid + "]: logged in succesfully", path + "server.log");
 				} else {
 					returnVal = "Wrong password or username";
+					
 				}	
 			} else {
 				authAttempts = 0;
