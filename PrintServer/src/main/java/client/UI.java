@@ -2,6 +2,7 @@ package client;
 
 import java.rmi.RemoteException;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import services.PrinterService;
 
@@ -16,15 +17,107 @@ public class UI {
 			//printOptions();
 			//String n = input.next();
 			
-			if(i.equals("print")) { printLogic(input); } 
+			if(i.equals("print")) { printLogic(input, service); } 
 			  else if (i.equals("1")) { printOptions(); } 
-			  else if (i.equals("queue")) { printOptions(); }
-			  else if (i.equals("topQueue")) { topQueueLogic(service, input); }
-			  else if (i.equals("start")) { service.start(); }
-			  else if (i.equals("stop")) { }
-			  else if (i.equals("restart")) {  }
-			  else if (i.equals("status")) {  }
+			  else if (i.equals("queue")) { queue(service, input); }
+			  else if (i.equals("top")) { topQueueLogic(service, input); }
+			  else if (i.equals("start")) { start(service); }
+			  else if (i.equals("stop")) { stop(service); }
+			  else if (i.equals("restart")) { restart(service); }
+			  else if (i.equals("status")) { status(service, input); }
 		}
+	}
+	
+	public void status(PrinterService service, Scanner input) {
+		
+		System.out.println("Write name of printer\n");
+		String printerName = input.nextLine();
+		
+		try {
+			String ret = service.status(printerName);
+			System.out.println(ret + "\n");
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		printOptions();
+		
+	}
+	
+	public void start(PrinterService service) {
+		
+		System.out.println("Starting server ..");
+		try {
+			service.start();
+		} catch (RemoteException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		printOptions();
+	}
+	
+	public void stop(PrinterService service) {
+		
+		System.out.println("Stopping server ..");
+		try {
+			service.stop();
+		} catch (RemoteException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		printOptions();
+	}
+	
+	public void restart(PrinterService service) {
+		
+		System.out.println("Restarting server ..");
+		try {
+			service.restart();
+		} catch (RemoteException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		printOptions();
+	}
+	
+	public void queue(PrinterService service, Scanner input) {
+		
+		System.out.println("Write name of printer\n");
+		String printerName = input.nextLine();
+		
+		try {
+			System.out.println(service.queue(printerName));
+			System.out.println("");
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		printOptions();
 	}
 	
 	public void topQueueLogic(PrinterService service, Scanner input) throws RemoteException {
@@ -33,21 +126,40 @@ public class UI {
 		String printerName = input.nextLine();
 		
 		System.out.println("Write job#");
-		String job = input.nextLine();
-		
-		service.topQueue(job, 0);
+
+		int job = Integer.parseInt(input.nextLine());
+		System.out.println(printerName + ": job# " + Integer.toString(job) + " sent to top of queue!\n\n");
+	
+		service.topQueue(printerName, job);
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		printOptions();
 		
 	}
 	
-	public void printLogic(Scanner input) {
+	public void printLogic(Scanner input, PrinterService service) {
 		System.out.println("Please write name of printer");
 		String printerName = input.nextLine();
 		
 		System.out.println("Please write name of file");
 		String fileName = input.nextLine();
 		
-		System.out.println("> print(" + printerName + ", " + fileName + "); ");
-		System.out.println("printing ...");
+		try {
+			service.print(fileName, printerName);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("Print sent to printerName\n\n");
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		printOptions();
 	}
 	
 
@@ -64,10 +176,6 @@ public class UI {
 	
 	public void printOptions() {
 		
-	    System.out.println("+--- MENU ------------------------------------------------------+");
-	    System.out.println("'                                                               '");
-	    System.out.println("'      See options(1)       Login / Logout(2)        Exit(3)    '");
-	    System.out.println("'                                                               '");
 	    System.out.println("+---COMMAND --------------DESCRIPTION---------------------------+");
 	    System.out.println("' print         │ prints file filename on the specified printer '");
 	    System.out.println("' queue         │ lists the print queue for a given printer     '");
