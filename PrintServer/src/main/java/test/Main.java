@@ -15,11 +15,7 @@ public class Main {
 		
 		server.begin(port);
 		client.begin(port);
-		
 		server.stopServer();
-		
-		
-		
 	}
 
 }

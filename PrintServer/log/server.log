@@ -1,0 +1,17 @@
+29-10-2021 20:07:12 -- [server]: starting..
+29-10-2021 20:07:21 -- [asdasd]: Too many unsuccesful login attemps. Lock applied
+29-10-2021 20:07:24 -- [asdasdk]: Too many unsuccesful login attemps
+29-10-2021 20:07:26 -- [asdasd]: Too many unsuccesful login attemps
+29-10-2021 20:07:32 -- [jeff]: Too many unsuccesful login attemps. Lock applied
+29-10-2021 20:07:50 -- [jeff]: logged in succesfully
+29-10-2021 20:07:51 -- [jeff]: Queue for printer: office
+29-10-2021 20:07:51 -- [Server]: Moving job[3] to top.
+29-10-2021 20:07:51 -- [jeff]: Queue for printer: office
+29-10-2021 20:07:51 -- [jeff]: Queue for printer: home
+29-10-2021 20:07:51 -- [server]: restarting..
+29-10-2021 20:07:51 -- [server]: stopping..
+29-10-2021 20:07:51 -- [server]: starting..
+29-10-2021 20:07:52 -- [jeff]: Queue for printer: office
+29-10-2021 20:07:52 -- [jeff]: reading server config
+29-10-2021 20:07:52 -- [jeff]: sets lockout time to: 20
+29-10-2021 20:07:52 -- [jeff]: reading server config

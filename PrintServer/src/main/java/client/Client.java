@@ -10,23 +10,19 @@ import java.util.concurrent.TimeUnit;
 import services.PrinterService;
 
 public class Client {
-	
 	PrinterService service;
 	
 	static UI ui = new UI();
 	static Scanner input = new Scanner(System.in);  // Create a Scanner object
 	
 	public void begin(int portnumber) throws RemoteException {
-		
 		try {
 			 service = (PrinterService) Naming.lookup("rmi://localhost:" + portnumber + "/printer");
 		} 
 		catch (MalformedURLException e) { e.printStackTrace(); } 
 		catch (RemoteException e) 		{ e.printStackTrace(); } 
 		catch (NotBoundException e) 	{ e.printStackTrace(); }
-		
-		
-				
+
 				// boot up server: creates database & printers
 				service.start(); 
 				
@@ -47,12 +43,10 @@ public class Client {
 		
 						service.print("text4.txt","home");
 						System.out.println(service.queue("home"));
-						
 		
-						
 						service.print("text6.txt","office");
-						
 						service.restart();
+						
 						service.print("passwords.txt","office");
 						service.print("sometext.txt","office");
 						System.out.println(service.queue("office"));
@@ -64,13 +58,9 @@ public class Client {
 						try {
 							TimeUnit.SECONDS.sleep(11);
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						
 						System.out.println(service.status("office"));
-						
-						
 					// manual
 					} else {
 						ui.printOptions();		
@@ -85,23 +75,19 @@ public class Client {
 
 	
 	public boolean login(PrinterService service) throws RemoteException {
-	
-		String yo = "";
+		String auth = "";
 		
-		while (!yo.equals("Login succesful!")) {
-			
+		while (!auth.equals("Login succesful!")) {	
 		    System.out.println("Enter your username");
 			String userName = input.nextLine();  
 			
 		    System.out.println("Enter your password");
 			String password = input.nextLine();  
 			
-			yo = service.authenticateUser(userName, password);		
+			auth = service.authenticateUser(userName, password);		
 			
-			System.out.println(yo);
+			System.out.println(auth);
 		}
-
 		return true;
-	
 	}
 }

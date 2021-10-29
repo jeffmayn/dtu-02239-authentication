@@ -9,19 +9,14 @@ import java.sql.Statement;
 import java.util.Random;
 
 public class Database {
-	
-
 	Connection c = null;
 	Statement stmt = null;
 	Crypto crypto = new Crypto();
-
 	
 	public String[] getCredentials(String user) {
-		
 		String sql = "select * from users where user = '" + user + "'";
 		String password = "";
 		String salt = "";
-		
 				try {
 					stmt = c.createStatement();
 					ResultSet result = stmt.executeQuery(sql);
@@ -56,14 +51,13 @@ public class Database {
 	          stmt.executeUpdate(sql);
 	          
 	          sql = "insert into users values ('jeff','" + crypto.hash("password22", "22-10-2021:21.18zz") + "','22-10-2021:21.18zz')";
-	         stmt.executeUpdate(sql);	        
+	          stmt.executeUpdate(sql);	        
 	          stmt.close();
 
 	      } catch ( Exception e ) {
 	          System.err.println("[Server]: " + e.getClass().getName() + " --> " + e.getMessage() );
 	          System.exit(0);
 	      }
-		
 	}
 	
 	public void disconnect() {
@@ -72,8 +66,6 @@ public class Database {
 			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
-		
+		}	
 	}
-
 }

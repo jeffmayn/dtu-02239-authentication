@@ -1,27 +1,16 @@
 package logic;
 
-import java.util.Date;
-
-
-public class Session {
-	
+public class Session {	
 	long loginStarted = 0;
 	boolean sessionAlive = false;
 	String uid = "";
 	
-	
-	public Session() {
-		
-	};
+	public Session() {};
 	
 	public void beginSession(String uid) {
 		this.sessionAlive = true;
 		this.uid = uid;
 		this.loginStarted = System.currentTimeMillis();
-		
-		//System.out.println("Session begin: (" + this.sessionAlive + ", " + this.uid + ", " + this.loginStarted + ")");
-
-		
 	}
 	
 	public long getSessionTime() {
@@ -32,15 +21,10 @@ public class Session {
 		long elapsedTime = System.currentTimeMillis() - loginStarted;
 		
 		if(elapsedTime < 10*1000) {
-			this.sessionAlive = true;
-	
-			
+			this.sessionAlive = true;	
 		} else {
-			
 			this.sessionAlive = false;
-			
-		}
-			
+		}	
 		return this.sessionAlive;
 	}
 	
@@ -51,5 +35,4 @@ public class Session {
 	public String getUser() {
 		return this.uid;
 	}
-
 }

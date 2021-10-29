@@ -12,13 +12,11 @@ import logic.Log;
 import logic.Session;
 
 public class PrinterServant  extends UnicastRemoteObject implements PrinterService {
-	
 	ArrayList<Printer> printers = new ArrayList<Printer>();
 	Database db = new Database();
 	Log log = new Log();
 	Crypto crypto = new Crypto();
 	Session session = new Session();
-
 	LocalDate localDate = LocalDate.now();
 	String path = "log\\";
 	
@@ -44,8 +42,6 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 				} 
 			}
 		}
-		
-
 	}
 	
 	public String queue(String printer)throws RemoteException {
@@ -57,7 +53,6 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 			queue = "Queue for printer: " + printer + "\n";
 			for (Printer p : printers) {
 				if(p.printerName.equals(printer)) {
-			
 					writeLogEntry("[" + loggedInUser + "]: Queue for printer: " + printer, path + "server.log");
 					
 					int i = 1;
@@ -68,7 +63,6 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 				} 
 			}
 		}
-		
 		return queue;
 	}
 
@@ -88,7 +82,6 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 	public void start() throws RemoteException{
 		writeLogEntry("[server]: starting..", path + "server.log");
 		db.initialiseDatabase();
-		//logPath = log.initialiseLog();
 		initialisePrinters(); 
 	}
 
@@ -116,11 +109,9 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 		String returnMessage = "";
 		if(!session.getSessionState()) {
 			returnMessage = "Session expired";
-	
 		} else {
 			returnMessage = "status for " + printer + ": ";
 			for(Printer p : printers) {
-				
 				if(p.printerName.equals(printer)) {
 					returnMessage = p.status();				
 				} 
@@ -141,7 +132,6 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 				retVal = "server configuration. Lockout time = " + Integer.toString(lockoutTime / 1000) + " seconds";
 			} 
 		}
-		
 		return retVal;
 	}
 
@@ -157,7 +147,6 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 	}
 	
 	private void initialisePrinters() {
-		
 		// printer(boolean color, integer ink level)
         Printer office = new Printer(true, 90);
         office.setPrinterName("office");
@@ -177,14 +166,11 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 		try {
 			log.writeLogEntry(txt, path);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-
 	public String authenticateUser(String uid, String password) throws RemoteException {
-		
 		String returnVal = "";
 		loggedIn = session.getSessionState();
 		
@@ -209,8 +195,7 @@ public class PrinterServant  extends UnicastRemoteObject implements PrinterServi
 					returnVal = "Login succesful!";
 					writeLogEntry("[" + uid + "]: logged in succesfully", path + "server.log");
 				} else {
-					returnVal = "Wrong password or username";
-					
+					returnVal = "Wrong password or username";		
 				}	
 			} else {
 				authAttempts = 0;
